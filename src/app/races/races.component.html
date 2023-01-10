@@ -1,0 +1,44 @@
+<ng-container *ngIf="races$ | async as races">
+  <table [dataSource]="races.races" mat-table multiTemplateDataRows>
+    <ng-container *ngFor="let column of columnsToDisplay" matColumnDef="{{column}}">
+      <th *matHeaderCellDef mat-header-cell> {{column | titlecase}} </th>
+      <td *matCellDef="let result" mat-cell style="border-bottom-width: 0">
+                <span [ngStyle]="{
+                'color': column === 'options' ? 'blue' : '',
+                'text-decoration': column === 'options' ? 'underline':''
+                }">
+                {{result[column]}}
+                </span>
+      </td>
+    </ng-container>
+
+    <!-- Results column -->
+    <ng-container matColumnDef="results">
+      <td *matCellDef="let race" colspan="3" mat-cell>
+        <div *ngIf="expandedRaceRound.value === race.round">
+          <app-race-results *ngIf="results$ | async as results; else loading"
+                            [results]="results"></app-race-results>
+          <ng-template #loading>
+            <mat-progress-spinner mode="indeterminate" style="margin: 2em auto"></mat-progress-spinner>
+          </ng-template>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
+    <tr
+      (click)="expandedRaceRound.next(expandedRaceRound.value === race.round ? null: race.round)"
+      *matRowDef="let race; columns: columnsToDisplay;"
+      mat-row
+      style="cursor: pointer"
+    ></tr>
+    <!-- Result row -->
+    <tr *matRowDef="let row; columns: ['results']" mat-row style="height: 0"></tr>
+  </table>
+  <mat-paginator (page)="paginatorService.paginator.next($event)"
+                 [length]="races.total"
+                 [pageIndex]="(paginatorService.paginator$ | async)?.pageIndex || 0"
+                 [pageSizeOptions]="[10, 15, 25]"
+  >
+  </mat-paginator>
+</ng-container>

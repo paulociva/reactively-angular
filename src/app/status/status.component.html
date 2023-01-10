@@ -1,0 +1,6 @@
+<mat-list *ngIf="status$ | async as results; else errorMessage">
+  <mat-list-item *ngFor="let status of results.status"> {{status.status}}: {{status.count}} </mat-list-item>
+</mat-list>
+<ng-template #errorMessage>
+  {{errorMessage$ | async}}
+</ng-template>

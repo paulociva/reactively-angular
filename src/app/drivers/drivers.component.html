@@ -1,0 +1,16 @@
+<ng-container *ngIf="vm$ | async as vm">
+  <table [dataSource]="vm.results" mat-table>
+    <ng-container *ngFor="let column of columnsToDisplay" matColumnDef="{{column}}">
+      <th *matHeaderCellDef mat-header-cell> {{column | titlecase}} </th>
+      <td *matCellDef="let result" mat-cell> {{result[column]}} </td>
+    </ng-container>
+    <tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: columnsToDisplay;" mat-row></tr>
+  </table>
+  <mat-paginator (page)="paginatorService.paginator.next($event)"
+                 [length]="vm.total"
+                 [pageIndex]="(paginatorService.paginator$ | async)?.pageIndex || 0"
+                 [pageSizeOptions]="[10, 15, 25]"
+  >
+  </mat-paginator>
+</ng-container>

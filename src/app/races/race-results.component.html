@@ -1,0 +1,8 @@
+<table [dataSource]="_results" mat-table>
+  <ng-container *ngFor="let column of columnsToDisplay" matColumnDef="{{column}}">
+    <th *matHeaderCellDef mat-header-cell> {{column | titlecase}} </th>
+    <td *matCellDef="let result" mat-cell> {{result[column]}} </td>
+  </ng-container>
+  <tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
+  <tr *matRowDef="let row; columns: columnsToDisplay;" mat-row></tr>
+</table>
